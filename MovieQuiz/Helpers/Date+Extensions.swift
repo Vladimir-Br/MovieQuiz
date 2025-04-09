@@ -1,13 +1,16 @@
 import Foundation
 
 extension Date {
-    var dateTimeString: String { DateFormatter.defaultDateTime.string(from: self) }
+    var dateString: String { return DateFormatter.sharedFormat("dd.MM.YY HH:mm").string(from: self)
+    }
+    var dateTimeString: String { return DateFormatter.sharedFormat("dd.MM.YY HH:mm").string(from: self)
+    }
 }
 
 private extension DateFormatter {
-    static let defaultDateTime: DateFormatter = {
+    static func sharedFormat(_ format: String) -> DateFormatter {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.YY hh:mm"
+        dateFormatter.dateFormat = format
         return dateFormatter
-    }()
+    }
 }

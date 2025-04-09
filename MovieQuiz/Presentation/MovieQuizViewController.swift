@@ -7,8 +7,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var counterLabel: UILabel!
     @IBOutlet private var textLabel: UILabel!
-    
-    
+     
     private var correctAnswers = 0
     private var currentQuestionIndex: Int = 0
     private let questionsAmount: Int = 10
@@ -31,12 +30,19 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        questionFactory = QuestionFactory()
-        questionFactory?.delegate = self
-        alertPresenter = AlertPresenter(viewController: self)
-        questionFactory?.requestNextQuestion()
+        setupUI()
+        setupLogic()
     }
+        private func setupUI() {
+            alertPresenter = AlertPresenter(viewController: self)
+        }
+        
+        private func setupLogic() {
+            questionFactory = QuestionFactory()
+            questionFactory?.delegate = self
+            questionFactory?.requestNextQuestion()
+        }
+    
     
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question = question else { return }
@@ -94,6 +100,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 buttonText: "Сыграть ещё раз",
                 completion: { [weak self] in
                     guard let self = self else { return }
+                    
                     self.currentQuestionIndex = 0
                     self.correctAnswers = 0
                     self.questionFactory?.requestNextQuestion()
@@ -108,13 +115,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
 }
 
-private extension Date {
-    var dateString: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yy HH:mm"
-        return formatter.string(from: self)
-    }
-}
+
 
 
 

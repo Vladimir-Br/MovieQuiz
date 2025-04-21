@@ -1,6 +1,4 @@
-//
-//  QuizStepViewModel.swift
-//  MovieQuiz
+
 
 import UIKit
 

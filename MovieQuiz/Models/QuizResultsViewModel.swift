@@ -1,6 +1,3 @@
-//
-//  QuizResultsViewModel.swift
-//  MovieQuiz
 
 import Foundation
 

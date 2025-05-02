@@ -1,13 +1,31 @@
 import Foundation
 import UIKit
 
-final class MovieQuizPresenter {
+final class MovieQuizPresenter: QuestionFactoryDelegate {
+    private var questionFactory: QuestionFactoryProtocol?
+    private weak var viewController: MovieQuizViewController?
+    
+    init(viewController: MovieQuizViewController) {
+        self.viewController = viewController
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+        questionFactory?.loadData()
+        viewController.showLoadingIndicator()
+    }
     let questionsAmount: Int = 10
     var correctAnswers: Int = 0
     private var currentQuestionIndex: Int = 0
-    var questionFactory: QuestionFactoryProtocol?
-    weak var viewController: MovieQuizViewController?
+   
     private let statisticService: StatisticServiceProtocol = StatisticService()
+    
+    func didLoadDataFromServer() {
+        viewController?.hideLoadingIndicator()
+        questionFactory?.requestNextQuestion()
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        let message = error.localizedDescription
+        viewController?.showNetworkError(message: message)
+    }
     
     func convert(model: QuizQuestion) -> QuizStepViewModel {
         QuizStepViewModel (
@@ -20,8 +38,10 @@ final class MovieQuizPresenter {
         currentQuestionIndex == questionsAmount - 1
     }
     
-    func resetQuestionIdex() {
+    func restartGame() {
         currentQuestionIndex = 0
+        correctAnswers = 0
+        questionFactory?.requestNextQuestion()
     }
     
     func switchToNextQuestion() {
@@ -43,6 +63,12 @@ final class MovieQuizPresenter {
         
         let givenAnswer = isYes
         viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    }
+    
+    func didAnswer(isCorrectAnswer: Bool) {
+        if isCorrectAnswer {
+            correctAnswers += 1
+        }
     }
     
     func didReceiveNextQuestion(question: QuizQuestion?) {
@@ -73,8 +99,7 @@ final class MovieQuizPresenter {
                 completion: { [weak self] in
                     guard let self else { return }
                     
-                    self.resetQuestionIdex()
-                    self.correctAnswers = 0
+                    self.restartGame()
                     self.questionFactory?.loadData()
                     self.viewController?.showLoadingIndicator()
                 }

@@ -7,11 +7,9 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private var textLabel: UILabel!
         
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-   
-    
-    
+  
     private let alertPresenter = AlertPresenter()
-    private let moviesLoader = MoviesLoader()
+   // private let moviesLoader = MoviesLoader()
     private var presenter: MovieQuizPresenter!
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
@@ -36,16 +34,10 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.borderWidth = 0
     }
     
-    func showAnswerResult(isCorrect: Bool) {
-        presenter.didAnswer(isCorrectAnswer: isCorrect)
+    func highLightImageBorder(isCorrectAnswer: Bool) {
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
-        imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
-            self.presenter.showNextQuestionOrResults()
-        }
+        imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
     }
     
     func showAlert(model: AlertModel) {

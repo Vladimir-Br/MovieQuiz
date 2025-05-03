@@ -1,15 +1,12 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var counterLabel: UILabel!
     @IBOutlet private var textLabel: UILabel!
-        
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-  
     private let alertPresenter = AlertPresenter()
-   // private let moviesLoader = MoviesLoader()
     private var presenter: MovieQuizPresenter!
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
